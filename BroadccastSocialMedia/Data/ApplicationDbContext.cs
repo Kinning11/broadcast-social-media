@@ -1,8 +1,8 @@
-﻿using BroadccastSocialMedia.Models;
+﻿using BroadcastSocialMedia.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BroadccastSocialMedia.Data
+namespace BroadcastSocialMedia.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

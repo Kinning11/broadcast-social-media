@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace BroadccastSocialMedia.Models
+namespace BroadcastSocialMedia.Models
 {
     public class ApplicationUser :IdentityUser
     {

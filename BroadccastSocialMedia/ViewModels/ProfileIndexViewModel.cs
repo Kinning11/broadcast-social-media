@@ -1,4 +1,4 @@
-﻿namespace BroadccastSocialMedia.ViewModels
+﻿namespace BroadcastSocialMedia.ViewModels
 {
     public class ProfileIndexViewModel
     {

@@ -1,9 +1,9 @@
-﻿using BroadccastSocialMedia.Models;
-using BroadccastSocialMedia.ViewModels;
+﻿using BroadcastSocialMedia.Models;
+using BroadcastSocialMedia.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BroadccastSocialMedia.Controllers
+namespace BroadchetercastSocialMedia.Controllers
 {
     public class ProfileController : Controller
     {

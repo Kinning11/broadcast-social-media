@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BroadccastSocialMedia-63b354a9-79b1-456a-8bfe-286094f106a5</UserSecretsId>
+    <AssemblyName>BroadcastSocialMedia</AssemblyName>
+    <RootNamespace>BroadcastSocialMedia</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

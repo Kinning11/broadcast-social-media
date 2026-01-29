@@ -1,4 +1,4 @@
-namespace BroadccastSocialMedia.Models
+namespace BroadcastSocialMedia.Models
 {
     public class ErrorViewModel
     {

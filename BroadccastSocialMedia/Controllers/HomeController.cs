@@ -1,8 +1,8 @@
 using System.Diagnostics;
-using BroadccastSocialMedia.Models;
+using BroadcastSocialMedia.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BroadccastSocialMedia.Controllers
+namespace BroadcastSocialMedia.Controllers
 {
     public class HomeController : Controller
     {

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BroadccastSocialMedia.Data.Migrations
+namespace BroadcastSocialMedia.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddedUserNameProperty : Migration

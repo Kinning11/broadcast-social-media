@@ -1,5 +1,5 @@
-using BroadccastSocialMedia.Data;
-using BroadccastSocialMedia.Models;
+using BroadcastSocialMedia.Data;
+using BroadcastSocialMedia.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
