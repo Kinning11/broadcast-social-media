@@ -3,7 +3,7 @@ using BroadcastSocialMedia.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BroadchetercastSocialMedia.Controllers
+namespace BroadcastSocialMedia.Controllers
 {
     public class ProfileController : Controller
     {
@@ -21,7 +21,7 @@ namespace BroadchetercastSocialMedia.Controllers
 
             var viewModel = new ProfileIndexViewModel()
             {
-                Name = user.Name ?? ""
+                Name = user.Name ?? "" 
            };
 
 
