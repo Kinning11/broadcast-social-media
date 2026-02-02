@@ -1,7 +1,10 @@
 ﻿using BroadcastSocialMedia.Data;
+using BroadcastSocialMedia.Models;
 using BroadcastSocialMedia.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace BroadcastSocialMedia.Controllers
 {
@@ -9,9 +12,11 @@ namespace BroadcastSocialMedia.Controllers
     {
 
         private readonly ApplicationDbContext _dbContext;
-        public UsersController(ApplicationDbContext dbContext)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public UsersController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager )
         {
             _dbContext = dbContext;
+            _userManager = userManager;
         }
         public async Task<IActionResult> Index(UsersIndexViewModel viewModel)
         {
@@ -23,6 +28,21 @@ namespace BroadcastSocialMedia.Controllers
                 viewModel.Result= users;
             }
             
+            return View(viewModel);
+        }
+
+        [Route("/Users/{id}")]
+        public async Task<IActionResult> ShowUser(string id)
+        {
+            var broadcasts = await _dbContext.Broadcasts.Where(b => b.User.Id == id).OrderByDescending(b => b.Published).ToListAsync();
+            var user = await _userManager.GetUserAsync(User);
+
+            var viewModel = new UsersShowUserViewModel()
+            {
+                Broadcasts = broadcasts,
+                User = user
+            };
+
             return View(viewModel);
         }
     }
