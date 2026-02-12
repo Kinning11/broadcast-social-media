@@ -25,24 +25,26 @@ namespace BroadcastSocialMedia.Controllers
 
         }
 
-
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated)
+            var user = await _userManager.GetUserAsync(User);
+            var dbUser = await _dbContext.Users.Where(u => u.Id == user.Id).FirstOrDefaultAsync();
+
+            var broadcasts = await _dbContext.Users.Where(u => u.Id == user.Id)
+                .SelectMany(u => u.ListeningTo)
+                .SelectMany(u => u.Broadcasts)
+                .Include(b => b.User)
+                .OrderByDescending(b => b.Published)
+                .ToListAsync();
+
+            var viewModel = new HomeIndexViewModel()
             {
-                var user = await _userManager.GetUserAsync(User);
+                Broadcasts = broadcasts
+            };
 
-                var listeningTo = await _dbContext.Users
-                    .Where(u => u.Id == user.Id)
-                    .SelectMany(u => u.ListeningTo)
-                    .ToListAsync();
-
-             
-            }
-
-            return View();
+            return View(viewModel);
         }
-
 
         public IActionResult Privacy()
         {
