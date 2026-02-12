@@ -34,33 +34,74 @@ namespace BroadcastSocialMedia.Controllers
         [Route("/Users/{id}")]
         public async Task<IActionResult> ShowUser(string id)
         {
+            var loggedInUserId = _userManager.GetUserId(User);
+
+            bool isFollowing = false;
+
+            if (loggedInUserId != null)
+            {
+                isFollowing = await _dbContext.Users
+                    .Where(u => u.Id == loggedInUserId)
+                    .SelectMany(u => u.ListeningTo)
+                    .AnyAsync(u => u.Id == id);
+            }
+
+
             var broadcasts = await _dbContext.Broadcasts.Where(b => b.User.Id == id).OrderByDescending(b => b.Published).ToListAsync();
             var user = await _dbContext.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
 
             var viewModel = new UsersShowUserViewModel()
             {
                 Broadcasts = broadcasts,
-                User = user
+                User = user,
+                IsFollowing = isFollowing
             };
 
             return View(viewModel);
         }
 
         [HttpPost, Route("/Users/Listen")]
-
         public async Task<IActionResult> ListenToUser(UsersListenToUserViewModel viewModel)
         {
-            var loggedInUser = await _userManager.GetUserAsync(User); // Inloggade användaren
-            var userToListenTo = await _dbContext.Users.Where(u => u.Id == viewModel.UserId).FirstOrDefaultAsync(); // Användaren som vi är inne på
+            var loggedInUser = await _userManager.Users
+                .Include(u => u.ListeningTo)
+                .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
 
-            loggedInUser.ListeningTo.Add(userToListenTo); // Lägg till i listan
+            var userToListenTo = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Id == viewModel.UserId);
 
-            await  _userManager.UpdateAsync(loggedInUser);
-            await _dbContext.SaveChangesAsync();
+            if (!loggedInUser.ListeningTo.Any(u => u.Id == viewModel.UserId))
+            {
+                loggedInUser.ListeningTo.Add(userToListenTo);
+                await _dbContext.SaveChangesAsync();
+            }
 
-
-            return RedirectToAction("Index", "Home");
-
+            return RedirectToAction("ShowUser", new { id = viewModel.UserId });
         }
+
+
+        [HttpPost]
+        [Route("/Users/UnListen")]
+        public async Task<IActionResult> UnListenToUser(string userId)
+        {
+            var loggedInUser = await _userManager.Users
+                .Include(u => u.ListeningTo)
+                .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
+
+            var userToRemove = loggedInUser.ListeningTo
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (userToRemove != null)
+            {
+                loggedInUser.ListeningTo.Remove(userToRemove);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return RedirectToAction("ShowUser", new { id = userId });
+        }
+
+
+    
+
     }
 }

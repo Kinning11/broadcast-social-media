@@ -6,5 +6,7 @@ namespace BroadcastSocialMedia.ViewModels
     {
         public ApplicationUser User { get; set; }
         public List<Broadcast> Broadcasts { get; set; }
+
+        public bool IsFollowing { get; set; }
     }
 }

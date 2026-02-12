@@ -10,8 +10,9 @@
 
     <h2>New Broadcast</h2>
 
-    <form method="post" action="/Home/Broadcast">
+    <form method="post" action="/Home/Broadcast" enctype="multipart/form-data">
         <textarea name="Message"></textarea> <br />
+        <input type="file" name="image" />
         <input type="submit" value="post" />
     </form>
 
@@ -26,7 +27,9 @@
                 @broadcast.User.Name 
                 (@broadcast.Published.ToShortDateString() @broadcast.Published.ToShortTimeString())
                 </b>
-            @broadcast.Message
+                         
+                @broadcast.Message
         </p>
+        <img src="@broadcast.ImagePath" />
     }
 </div>

@@ -13,10 +13,25 @@
 
     @if (user.Id != Model.User.Id)
     {
-        <form action="/Users/Listen" method="post">
+        if(Model.IsFollowing)
+        {
+             <form action="/Users/UnListen" method="post">
             <input type="hidden" name="UserId" value="@Model.User.Id" />
-            <input type="submit" value="Listen to" />
+            <input type="submit" value="Unfollow" />
             </form>
+
+        }
+        else
+        {
+            <form action="/Users/Listen" method="post">
+            <input type="hidden" name="userId" value="@Model.User.Id" />
+            <input type="submit" value="Follow" />
+
+
+            </form>
+        }
+
+            
     }
 
     @foreach (var broadcast in Model.Broadcasts)

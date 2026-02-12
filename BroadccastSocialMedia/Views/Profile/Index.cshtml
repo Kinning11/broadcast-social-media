@@ -1,10 +1,20 @@
 ﻿@model ProfileIndexViewModel
 
+
 <div>
    <h1>Update profile</h1>
 
-   <form method="post" action="/Profile/Update"> 
+   <form method="post" action="/Profile/Update" enctype="multipart/form-data"> 
    <input  value="@Model.Name" name="Name"placeholder="Name"   />
+   <input type="file" name="image"/>
    <input type="submit" value="Save" />
+   
    </form>
+
+    @if (Model.ProfileImagePath != null)
+    {
+        <img src="@Model.ProfileImagePath" />
+    }
+
+
 </div>

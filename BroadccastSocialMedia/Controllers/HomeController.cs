@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace BroadcastSocialMedia.Controllers
 {
@@ -31,12 +30,12 @@ namespace BroadcastSocialMedia.Controllers
             var user = await _userManager.GetUserAsync(User);
             var dbUser = await _dbContext.Users.Where(u => u.Id == user.Id).FirstOrDefaultAsync();
 
-            var broadcasts = await _dbContext.Users.Where(u => u.Id == user.Id)
-                .SelectMany(u => u.ListeningTo)
-                .SelectMany(u => u.Broadcasts)
-                .Include(b => b.User)
-                .OrderByDescending(b => b.Published)
-                .ToListAsync();
+            var broadcasts = await _dbContext.Broadcasts
+         .Include(b => b.User)
+         .OrderByDescending(b => b.Published)
+         .ToListAsync();
+
+
 
             var viewModel = new HomeIndexViewModel()
             {
@@ -59,13 +58,28 @@ namespace BroadcastSocialMedia.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Broadcast(HomeBroadcastViewModel viewModel)
+        public async Task<IActionResult> Broadcast(HomeBroadcastViewModel viewModel, IFormFile image)
         {
             var user = await _userManager.GetUserAsync(User); //Hämtar användaren som vi är inloggade på genom DI
+            string? imagepath = null;
+
+            if (image != null)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "broadcasts");
+                var filePath = Path.Combine(uploadsFolder, image.FileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                imagepath = "/images/broadcasts/" + image.FileName;
+            }
             var broadcast = new Broadcast() //Skapa en ny broadcast
             {
                 Message = viewModel.Message, //Definera props, Id kommer populera automatiskt från databasen, published får redan från DateTime.Now;, User hämtar vi genom DI (_userManager)
-                User = user
+                User = user,
+                ImagePath = imagepath
             };
 
             _dbContext.Broadcasts.Add(broadcast);
@@ -75,7 +89,7 @@ namespace BroadcastSocialMedia.Controllers
             return Redirect("/");
 
 
-            
+
         }
     }
 }
