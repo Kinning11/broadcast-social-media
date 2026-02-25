@@ -28,18 +28,31 @@ namespace BroadcastSocialMedia.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            var dbUser = await _dbContext.Users.Where(u => u.Id == user.Id).FirstOrDefaultAsync();
+
+            var user1 = await _dbContext.Users
+           .Include(u => u.ListeningTo)
+           .FirstOrDefaultAsync(u => u.Id == user.Id);
 
             var broadcasts = await _dbContext.Broadcasts
          .Include(b => b.User)
+         .Include(l => l.Likes)
          .OrderByDescending(b => b.Published)
          .ToListAsync();
 
 
 
-            var viewModel = new HomeIndexViewModel()
+            var recommended = await _dbContext.Users
+            .Where(u => u.Id != user.Id && !user.ListeningTo
+            .Select(l => l.Id)
+            .Contains(u.Id))
+            .Take(5)
+            .ToListAsync();
+
+            var viewModel = new HomePageViewModel()
             {
-                Broadcasts = broadcasts
+
+                Broadcasts = broadcasts,
+                RecommendedUsers = recommended
             };
 
             return View(viewModel);
@@ -60,6 +73,8 @@ namespace BroadcastSocialMedia.Controllers
 
         public async Task<IActionResult> Broadcast(HomeBroadcastViewModel viewModel, IFormFile image)
         {
+
+
             var user = await _userManager.GetUserAsync(User); //Hämtar användaren som vi är inloggade på genom DI
             string? imagepath = null;
 
@@ -79,7 +94,10 @@ namespace BroadcastSocialMedia.Controllers
             {
                 Message = viewModel.Message, //Definera props, Id kommer populera automatiskt från databasen, published får redan från DateTime.Now;, User hämtar vi genom DI (_userManager)
                 User = user,
-                ImagePath = imagepath
+                ImagePath = imagepath,
+
+
+
             };
 
             _dbContext.Broadcasts.Add(broadcast);
@@ -91,5 +109,65 @@ namespace BroadcastSocialMedia.Controllers
 
 
         }
+
+        [HttpPost]
+        [Authorize]
+
+        public async Task<IActionResult> BroadcastLiked(int BroadcastId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var likedPost = await _dbContext.Likes.Where(l => l.UserId == user.Id && l.BroadcastId == BroadcastId).FirstOrDefaultAsync(); // Är liken gjord av den inloggade användaren och gäller den här liken detta inlägget?
+
+            if (likedPost != null)
+            {
+                _dbContext.Likes.Remove(likedPost);
+            }
+            else
+            {
+                _dbContext.Likes.Add(new Like()
+                {
+                    UserId = user.Id,
+                    BroadcastId = BroadcastId
+                });
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ToggleLike(int BroadcastId)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var broadcast = await _dbContext.Broadcasts
+                .Include(b => b.Likes)
+                .FirstOrDefaultAsync(b => b.Id == BroadcastId);
+
+            if (broadcast == null)
+                return Json(new { success = false });
+
+            var existingLike = broadcast.Likes
+                .FirstOrDefault(l => l.UserId == userId);
+
+            if (existingLike != null)
+            {
+                _dbContext.Likes.Remove(existingLike);
+            }
+            else
+            {
+                _dbContext.Likes.Add(new Like
+                {
+                    BroadcastId = BroadcastId,
+                    UserId = userId
+                });
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
     }
 }

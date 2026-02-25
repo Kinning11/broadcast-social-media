@@ -1,22 +1,514 @@
-html {
-  font-size: 14px;
-}
+/* ==============================
+   BASE
+============================== */
 
-@media (min-width: 768px) {
-  html {
+
+
+html {
     font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(to right, #65676b, #e3ebf1, #65676b);
+    color: #1c1e21;
+}
+
+main {
+    flex: 1 0;
+    padding-top: 40px;
+}
+
+
+/* ==============================
+   LAYOUT
+============================== */
+
+.home-index {
+    display: flex;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    align-items: flex-start;
+}
+
+.feed-column {
+    flex: 2;
+    background: #f0f2f5;
+    padding: 25px;
+    border-radius: 24px;
+}
+
+.recommended-column {
+    flex: 1;
+    position: sticky;
+    top: 100px;
+}
+
+/* ==============================
+   CARDS
+============================== */
+
+/* ==============================
+   BASE
+============================== */
+
+html {
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(to right, #65676b, #e3ebf1, #65676b);
+    color: #1c1e21;
+}
+
+main {
+    flex: 1;
+}
+
+/* ==============================
+   LAYOUT
+============================== */
+
+.home-index {
+    display: flex;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    align-items: flex-start;
+}
+
+.feed-column {
+    flex: 2;
+    background: #f0f2f5;
+    padding: 30px;
+    border-radius: 24px;
+}
+
+.recommended-column {
+    flex: 1;
+    position: sticky;
+    top: 100px;
+}
+
+/* ==============================
+   CARDS
+============================== */
+
+.broadcast-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 1.5rem;
+    
+    margin-bottom: 24px;
+    border: 1px solid #e4e6eb;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .broadcast-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+    }
+    .broadcast-card:not(:last-child) {
+        margin-bottom: 40px;
+    }
+    
+
+/* ==============================
+   HEADER
+============================== */
+
+.broadcast-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #65676b;
+}
+
+.profile-link {
+    text-decoration: none;
+    color: #1c1e21;
+    font-weight: 600;
+}
+
+    .profile-link:hover {
+        color: #1877f2;
+    }
+
+/* ==============================
+   CONTENT
+============================== */
+
+.broadcast-message {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.broadcast-image img {
+    width: 100%;
+    border-radius: 14px;
+    margin-top: 10px;
+}
+
+/* ==============================
+   ACTIONS
+============================== */
+
+.broadcast-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #e4e6eb;
+}
+
+.like-count {
+    font-size: 0.9rem;
+    color: #65676b;
+}
+
+.like-button button {
+    background: none;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+    .like-button button:hover {
+        background: #f0f2f5;
+        color: #1877f2;
+    }
+
+/* ==============================
+   TITLES
+============================== */
+
+.broadcast-h {
+    margin-bottom: 25px;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+/* ==============================
+   RECOMMENDED USERS
+============================== */
+
+.recommended-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+    .recommended-user.removing {
+        transform: translateX(150%);
+        opacity: 0;
+    }
+
+.recommended-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-image {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ==============================
+   FOLLOW BUTTON
+============================== */
+
+.follow-btn button {
+    background: #1877f2;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+    .follow-btn button:hover {
+        opacity: 0.9;
+    }
+
+    .follow-btn button:active {
+        transform: scale(0.95);
+    }
+
+/* ==============================
+   NAVBAR
+============================== */
+
+.custom-navbar {
+    
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 10px 0;
+    border-bottom: 1px solid #e4e6eb;
+}
+
+.navbar-nav {
+    gap: 30px;
+}
+
+.nav-link {
+    position: relative;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #6b7280 !important;
+    padding: 6px 4px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+    .nav-link:hover {
+        color: #111827 !important;
+        transform: scale(1.08);
+    }
+
+    .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 0%;
+        height: 2px;
+        background: #1877f2;
+        transition: width 0.25s ease;
+    }
+
+    .nav-link.active::after {
+        width: 100%;
+    }
+
+/* ==============================
+   FOOTER
+============================== */
+
+
+
+    .broadcast-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+    }
+
+/* ==============================
+   HEADER
+============================== */
+
+.broadcast-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #65676b;
+}
+
+.profile-link {
+    text-decoration: none;
+    color: #1c1e21;
+    font-weight: 600;
+}
+
+    .profile-link:hover {
+        color: #1877f2;
+    }
+
+/* ==============================
+   CONTENT
+============================== */
+
+.broadcast-message {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.broadcast-image img {
+    width: 100%;
+    border-radius: 14px;
+    margin-top: 10px;
+}
+
+/* ==============================
+   ACTIONS
+============================== */
+
+.broadcast-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #e4e6eb;
+}
+
+.like-count {
+    font-size: 0.9rem;
+    color: #65676b;
+}
+
+.like-button button {
+    background: none;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+    .like-button button:hover {
+        background: #f0f2f5;
+        color: #1877f2;
+    }
+
+/* ==============================
+   TITLES
+============================== */
+
+.broadcast-h {
+    margin-bottom: 25px;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+/* ==============================
+   RECOMMENDED USERS
+============================== */
+
+.recommended-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+    .recommended-user.removing {
+        transform: translateX(150%);
+        opacity: 0;
+    }
+
+.recommended-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-image {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ==============================
+   FOLLOW BUTTON
+============================== */
+
+.follow-btn button {
+    background: #1877f2;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+    .follow-btn button:hover {
+        opacity: 0.9;
+    }
+
+    .follow-btn button:active {
+        transform: scale(0.95);
+    }
+
+/* ==============================
+   NAVBAR
+============================== */
+
+.custom-navbar {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 10px 0;
+    border-bottom: 1px solid #e4e6eb;
+}
+
+.navbar-nav {
+    gap: 30px;
+}
+
+.nav-link {
+    position: relative;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #6b7280 !important;
+    padding: 6px 4px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+    .nav-link:hover {
+        color: #111827 !important;
+        transform: scale(1.08);
+    }
+
+    .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 0%;
+        height: 2px;
+        background: #1877f2;
+        transition: width 0.25s ease;
+    }
+
+    .nav-link.active::after {
+        width: 100%;
+    }
+
+/* ==============================
+   FOOTER
+============================== */
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9rem;
+    color: #6b7280;
 }

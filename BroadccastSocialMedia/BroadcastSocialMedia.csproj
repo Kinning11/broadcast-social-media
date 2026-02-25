@@ -22,4 +22,12 @@
     <Folder Include="wwwroot\images\profiles\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\alexa\OneDrive\Skrivbord\Studier\broadcast-social-media\BroadccastSocialMedia\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\alexa\OneDrive\Skrivbord\Studier\broadcast-social-media\BroadccastSocialMedia\.editorconfig" />
+  </ItemGroup>
+
 </Project>

@@ -10,11 +10,12 @@
 
         public DateTime Published { get; set; } = DateTime.Now;
 
-        // Foreign key
+        
         public string UserId { get; set; }
 
-        // Navigation property
         public ApplicationUser User { get; set; }
+
+        public ICollection<Like> Likes { get; set; }
     }
 
 }

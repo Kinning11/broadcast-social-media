@@ -1,27 +1,46 @@
 ﻿@model UsersIndexViewModel
 
-<div>
-    <h1>Search for users</h1>
+<div class="broadcast-card">
+    <h1 class="broadcast-h">Search for users</h1>
+    <div class="users-search">
 
-    <form action="/Users" method="get">
-        <input type="text" name="Search" placeholder="Search" value="@Model.Search" />
-        <input type="submit" value="Search" />
-    </form>
+        <div>
+            <form action="/Users" method="get">
+                <input type="text" name="Search" placeholder="Search" value="@Model.Search" />
+                <button type="submit" class="follow-btn">--></button>
+            </form>
+        </div>
 
-    <hr />
 
-    <h2>Results</h2>
+        <hr />
+    </div>
+    <div class="users-result">
+        <h2>Results</h2>
 
-    @foreach (var user in Model.Result)
-    {
-        <p>
-            <a href="/Users/@user.Id">
-                @user.Name
+        @foreach (var user in Model.Result)
+        {
+            <p class="broadcast-card">
+                <a asp-controller="Users"
+                   asp-action="ShowUser"
+                   asp-route-id="@user.Id"
+                   class="profile-link">
+                    @user.Name
+                </a>
+                @if (!string.IsNullOrEmpty(user.ProfileImagePath))
+                {
+                    <img src="@user.ProfileImagePath" class="profile-image" />
+                }
+                else
+                {
+                    <img src="/images/default-profile.png" class="profile-image" />
+                }
+            </p>
 
-            </a>
-        </p>
+        }
 
-    }
-
+    </div>
 
 </div>
+
+   
+

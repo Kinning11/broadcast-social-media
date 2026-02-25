@@ -416,3 +416,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+# Ignore uploaded images
+wwwroot/images/broadcasts/
+wwwroot/images/profiles/

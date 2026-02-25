@@ -1,35 +1,146 @@
-﻿@model HomeIndexViewModel
-
+﻿@model HomePageViewModel
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+<div class="feed-container">
 
-    <h2>New Broadcast</h2>
+    <div class="home-index">
 
-    <form method="post" action="/Home/Broadcast" enctype="multipart/form-data">
-        <textarea name="Message"></textarea> <br />
-        <input type="file" name="image" />
-        <input type="submit" value="post" />
-    </form>
+        
+        <div class="feed-column">
 
-    <hr />
+            <h1 class="broadcast-h">Home</h1>
 
-    <h2>Broadcasts</h2>
+            
+            <div class="broadcast-card">
+                <form method="post"
+                      action="/Home/Broadcast"
+                      enctype="multipart/form-data">
 
-    @foreach (var broadcast in Model.Broadcasts)
-    {
-        <p>
-            <b>
-                @broadcast.User.Name 
-                (@broadcast.Published.ToShortDateString() @broadcast.Published.ToShortTimeString())
-                </b>
-                         
-                @broadcast.Message
-        </p>
-        <img src="@broadcast.ImagePath" />
-    }
+                    <div class="broadcast-message">
+                        <textarea name="Message"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="What's on your mind?"
+                                  required></textarea>
+                    </div>
+
+                    <div class="broadcast-actions">
+                        <label for="imageUpload" class="file-upload-btn">
+                            Add Photo
+                        </label>
+
+                        <input type="file"
+                               id="imageUpload"
+                               name="image"
+                               hidden />
+
+                        <button type="submit" class="btn btn-primary">
+                            Post
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+           
+            @foreach (var broadcast in Model.Broadcasts)
+            {
+                <div class="broadcast-card">
+
+                    <div class="broadcast-header">
+                        <a asp-controller="Users"
+                           asp-action="ShowUser"
+                           asp-route-id="@broadcast.User.Id"
+                           class="profile-link">
+                            @broadcast.User.Name
+                        </a>
+
+                        <span>
+                            @broadcast.Published.ToShortDateString()
+                            @broadcast.Published.ToShortTimeString()
+                        </span>
+                    </div>
+
+                    <div class="broadcast-message">
+                        @broadcast.Message
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(broadcast.ImagePath))
+                    {
+                        <div class="broadcast-image">
+                            <img src="@broadcast.ImagePath" />
+                        </div>
+                    }
+
+                    <div class="broadcast-actions">
+
+                        <span class="like-count">
+                            @broadcast.Likes.Count Likes
+                        </span>
+
+                        @{
+                            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                            var isLiked = broadcast.Likes.Any(l => l.UserId == currentUserId);
+                        }
+
+                        <button class="like-btn"
+                                data-broadcast-id="@broadcast.Id">
+                            @(isLiked ? "🤍 Unlike" : "❤️ Like")
+                        </button>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+       
+        <div class="recommended-column">
+
+            <h1 class="broadcast-h">Recommended</h1>
+
+            @foreach (var user in Model.RecommendedUsers)
+            {
+                <div class="broadcast-card recommended-user">
+
+                    <div class="recommended-user-info">
+                        <a asp-controller="Users"
+                           asp-action="ShowUser"
+                           asp-route-id="@user.Id"
+                           class="profile-link">
+
+                            @if (!string.IsNullOrEmpty(user.ProfileImagePath))
+                            {
+                                <img src="@user.ProfileImagePath"
+                                     class="profile-image" />
+                            }
+                            else
+                            {
+                                <img src="/images/default-profile.png"
+                                     class="profile-image" />
+                            }
+
+                            <span>@user.Name</span>
+                        </a>
+                    </div>
+
+                    
+                      
+                        <button class="follow-button" data-user-id="@user.Id">
+                            Follow
+                        </button>
+                   
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
 </div>

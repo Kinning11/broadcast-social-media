@@ -1,20 +1,53 @@
 ﻿@model ProfileIndexViewModel
+@Html.ValidationSummary() 
 
 
-<div>
-   <h1>Update profile</h1>
+<div class="feed-container">
+    <div class="broadcast-card">
+        <div class="header">
+        <h1>Update profile</h1>
 
-   <form method="post" action="/Profile/Update" enctype="multipart/form-data"> 
-   <input  value="@Model.Name" name="Name"placeholder="Name"   />
-   <input type="file" name="image"/>
-   <input type="submit" value="Save" />
-   
-   </form>
+        @if (Model.ProfileImagePath != null)
+        {
+            <img src="@Model.ProfileImagePath" class="profile-image" />
+        }
+        </div>
 
-    @if (Model.ProfileImagePath != null)
-    {
-        <img src="@Model.ProfileImagePath" />
-    }
+        <div class="broadcast-actions">
+
+            <form method="post"
+                  action="/Profile/Update"
+                  enctype="multipart/form-data">
+
+                <input value="@Model.Name"
+                       name="Name"
+                       placeholder="Name" />
+
+                <label for="imageUpload"
+                       class="file-upload-btn">
+                    Change Profile Picture
+                </label>
+
+                <input type="file"
+                       id="imageUpload"
+                       name="image"
+                       hidden />
+
+                <button type="submit" class="btn btn-primary">
+                    Save
+                </button>
+
+            </form>
+
+           
+
+          
+            </div>
+        </div>
+        
+           
+        
+      
+    </div>
 
 
-</div>

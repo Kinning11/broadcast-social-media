@@ -4,7 +4,6 @@ using BroadcastSocialMedia.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
 
 namespace BroadcastSocialMedia.Controllers
 {
@@ -13,24 +12,28 @@ namespace BroadcastSocialMedia.Controllers
 
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
-        public UsersController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager )
+        public UsersController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
         {
             _dbContext = dbContext;
             _userManager = userManager;
         }
-        public async Task<IActionResult> Index(UsersIndexViewModel viewModel)
-        {
-            if (viewModel.Search != null) 
-            {
-                var users = await _dbContext.Users.Where(u => u.Name.Contains(viewModel.Search))
-                .ToListAsync();
 
-                viewModel.Result= users;
+        public async Task<IActionResult> Index(string search)
+        {
+            var viewModel = new UsersIndexViewModel
+            {
+                Search = search
+            };
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                viewModel.Result = await _dbContext.Users
+                    .Where(u => u.Name.Contains(search))
+                    .ToListAsync();
             }
-            
+
             return View(viewModel);
         }
-
         [Route("/Users/{id}")]
         public async Task<IActionResult> ShowUser(string id)
         {
@@ -47,14 +50,19 @@ namespace BroadcastSocialMedia.Controllers
             }
 
 
-            var broadcasts = await _dbContext.Broadcasts.Where(b => b.User.Id == id).OrderByDescending(b => b.Published).ToListAsync();
+            var broadcasts = await _dbContext.Broadcasts
+                .Where(b => b.User.Id == id)
+                .Include(b => b.Likes)
+                .OrderByDescending(b => b.Published)
+                .ToListAsync();
             var user = await _dbContext.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
 
             var viewModel = new UsersShowUserViewModel()
             {
                 Broadcasts = broadcasts,
                 User = user,
-                IsFollowing = isFollowing
+                IsFollowing = isFollowing,
+
             };
 
             return View(viewModel);
@@ -76,7 +84,7 @@ namespace BroadcastSocialMedia.Controllers
                 await _dbContext.SaveChangesAsync();
             }
 
-            return RedirectToAction("ShowUser", new { id = viewModel.UserId });
+            return Json(new { success = true });
         }
 
 
@@ -101,7 +109,7 @@ namespace BroadcastSocialMedia.Controllers
         }
 
 
-    
+
 
     }
 }

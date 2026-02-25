@@ -1,44 +1,96 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@model UsersShowUserViewModel 
+@using System.Security.Claims
+@model UsersShowUserViewModel
 @inject UserManager<ApplicationUser> UserManager
 
-    @{
-        var user = await UserManager.GetUserAsync(User); //Hämta användare
-        ViewData["Title"] = Model.User.Name; //Flikens namnn (användaren som vi visar)
-    }
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    ViewData["Title"] = Model.User.Name;
+}
 
-<div>
+<div class="feed-container">
 
-    <h1>Broadcast from @Model.User.Name</h1>
+    
+    <div class="broadcast-card recommended-user">
 
-    @if (user.Id != Model.User.Id)
-    {
-        if(Model.IsFollowing)
+        <div class="recommended-user-info">
+            @if (!string.IsNullOrEmpty(Model.User.ProfileImagePath))
+            {
+                <img src="@Model.User.ProfileImagePath"
+                     class="profile-image" />
+            }
+            else
+            {
+                <img src="/images/default-profile.png"
+                     class="profile-image" />
+            }
+
+            <h2>@Model.User.Name</h2>
+        </div>
+
+        @if (currentUser.Id != Model.User.Id)
         {
-             <form action="/Users/UnListen" method="post">
-            <input type="hidden" name="UserId" value="@Model.User.Id" />
-            <input type="submit" value="Unfollow" />
-            </form>
+            <form method="post"
+                  action="@(Model.IsFollowing ? "/Users/UnListen" : "/Users/Listen")">
 
-        }
-        else
-        {
-            <form action="/Users/Listen" method="post">
-            <input type="hidden" name="userId" value="@Model.User.Id" />
-            <input type="submit" value="Follow" />
+                <input type="hidden"
+                       name="UserId"
+                       value="@Model.User.Id" />
 
-
+                <button type="submit" class="follow-button">
+                    @(Model.IsFollowing ? "Unfollow" : "Follow")
+                </button>
             </form>
         }
 
-            
-    }
+    </div>
 
+    <h3 class="broadcast-h">
+        Broadcasts from @Model.User.Name
+    </h3>
+
+    
     @foreach (var broadcast in Model.Broadcasts)
     {
-        <p>
-            <b>@broadcast.Published.ToShortDateString() @broadcast.Published.ToShortTimeString()</b>
-            @broadcast.Message
-        </p>
+        <div class="broadcast-card">
+
+            <div class="broadcast-header">
+                <span>
+                    @broadcast.Published.ToShortDateString()
+                    @broadcast.Published.ToShortTimeString()
+                </span>
+            </div>
+
+            <div class="broadcast-message">
+                @broadcast.Message
+            </div>
+
+            @if (!string.IsNullOrEmpty(broadcast.ImagePath))
+            {
+                <div class="broadcast-image">
+                    <img src="@broadcast.ImagePath" />
+                </div>
+            }
+
+            <div class="broadcast-actions">
+
+                <span class="like-count">
+                    @broadcast.Likes.Count Likes
+                </span>
+
+                @{
+                    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var isLiked = broadcast.Likes.Any(l => l.UserId == currentUserId);
+                }
+
+                <button class="like-btn"
+                        data-broadcast-id="@broadcast.Id">
+                    @(isLiked ? "🤍 Unlike" : "❤️ Like")
+                </button>
+
+            </div>
+
+        </div>
     }
+
 </div>

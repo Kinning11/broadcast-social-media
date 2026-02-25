@@ -1,0 +1,18 @@
+root = true
+
+[*.cs]
+
+# Indentation
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+# Braces
+csharp_new_line_before_open_brace = all
+
+# Spacing
+csharp_space_after_comma = true
+csharp_space_around_binary_operators = before_and_after
+
+# Keep LINQ readable
+dotnet_style_operator_placement_when_wrapping = beginning_of_line

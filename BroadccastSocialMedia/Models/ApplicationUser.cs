@@ -12,5 +12,7 @@ namespace BroadcastSocialMedia.Models
         public ICollection<ApplicationUser> ListeningTo { get; set; } = new List<ApplicationUser>();
 
         public ICollection<ApplicationUser> ListeningBy { get; set; } = new List<ApplicationUser>();
+
+        public ICollection<Like> Likes { get; set; }
     }
 }

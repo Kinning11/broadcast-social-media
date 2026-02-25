@@ -1,7 +1,9 @@
-﻿using BroadcastSocialMedia.Models;
+﻿using BroadcastSocialMedia.Data;
+using BroadcastSocialMedia.Models;
 using BroadcastSocialMedia.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BroadcastSocialMedia.Controllers
 {
@@ -9,14 +11,17 @@ namespace BroadcastSocialMedia.Controllers
     {
 
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _dbContext;
 
-        public ProfileController(UserManager<ApplicationUser> userManager)
+        public ProfileController(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
         {
              _userManager = userManager;
+            _dbContext = dbContext;
         }
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
+
 
 
             var viewModel = new ProfileIndexViewModel()
@@ -31,9 +36,20 @@ namespace BroadcastSocialMedia.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(ProfileIndexViewModel viewModel, IFormFile image)
+        public async Task<IActionResult> Update(ProfileIndexViewModel viewModel, IFormFile? image)
         {
             var user = await _userManager.GetUserAsync(User); // Hämta användaren
+           
+
+            var usernameExists = await _dbContext.Users
+                .AnyAsync(u => u.Name == viewModel.Name && u.Id != user.Id);
+
+            if (usernameExists)
+            {
+                ModelState.AddModelError("Name", "Användarnamnet är upptaget");
+                return View("Index", viewModel);
+            }
+
             user.Name = viewModel.Name; //Spara till användaren "user"
 
             if (image != null)
