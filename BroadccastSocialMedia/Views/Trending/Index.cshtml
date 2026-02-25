@@ -1,0 +1,75 @@
+﻿@using System.Security.Claims
+@model HomeIndexViewModel
+
+@{
+    ViewData["Title"] = "Trending Page";
+}
+
+<div class="feed-container">
+
+    <h2 class="broadcast-h">Top 10 trending broadcasts</h2>
+
+    @foreach (var broadcast in Model.Broadcasts)
+    {
+        <div class="broadcast-card">
+
+            <!-- HEADER -->
+            <div class="broadcast-header">
+                <a asp-controller="Users"
+                   asp-action="ShowUser"
+                   asp-route-id="@broadcast.User.Id"
+                   class="profile-link">
+                    <strong>@broadcast.User.Name</strong>
+                </a>
+
+                <span class="broadcast-date">
+                    (@broadcast.Published.ToShortDateString()
+                    @broadcast.Published.ToShortTimeString())
+                </span>
+            </div>
+
+            <!-- MESSAGE -->
+            <div class="broadcast-message">
+                @broadcast.Message
+            </div>
+
+            <!-- IMAGE -->
+            @if (!string.IsNullOrEmpty(broadcast.ImagePath))
+            {
+                <div class="broadcast-image">
+                    <img src="@broadcast.ImagePath" style="max-width:300px;" />
+                </div>
+            }
+
+            <div class="broadcast-actions">
+
+                <span class="like-count">
+                    @broadcast.Likes.Count Likes
+                </span>
+
+                @{
+                    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var isLiked = broadcast.Likes.Any(l => l.UserId == currentUserId);
+                }
+
+                <div class="like-button">
+                    <button class="like-btn"
+                            data-broadcast-id="@broadcast.Id">
+                        @if (isLiked)
+                        {
+                            <text>🤍 Unlike</text>
+                        }
+                        else
+                        {
+                            <text>❤️ Like</text>
+                        }
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

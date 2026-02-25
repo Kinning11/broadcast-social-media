@@ -1,0 +1,40 @@
+﻿@model List<ApplicationUser>
+
+
+<div class="feed-container">
+    <h1 class="broadcast-h">Recommended</h1>
+
+    @foreach (var user in Model)
+    {
+
+
+        <div class="broadcast-card recommended-user">
+            <a asp-controller="Users"
+               asp-action="ShowUser"
+               asp-route-id="@user.Id"
+                class="profile-link">
+                @if (!string.IsNullOrEmpty(user.ProfileImagePath))
+                {
+                    <img src="@user.ProfileImagePath"
+                         class="profile-image" />
+                }
+                else
+                {
+                    <img src="/images/default-profile.png"
+                         class="profile-image" />
+                }
+
+                <span>@user.Name</span>
+                
+            </a>
+
+            <div class="follow-btn">
+                <button class="follow-button" data-user-id="@user.Id">
+                    Follow
+                </button>
+            </div>
+            
+        </div>
+    }
+</div>
+  
