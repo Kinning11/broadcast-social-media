@@ -81,14 +81,20 @@ namespace BroadcastSocialMedia.Controllers
             if (image != null)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "broadcasts");
-                var filePath = Path.Combine(uploadsFolder, image.FileName);
+
+                // Säkerställ att mappen finns
+                Directory.CreateDirectory(uploadsFolder);
+
+                // Skapa unikt filnamn
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await image.CopyToAsync(stream);
                 }
 
-                imagepath = "/images/broadcasts/" + image.FileName;
+                imagepath = "/images/broadcasts/" + fileName;
             }
             var broadcast = new Broadcast() //Skapa en ny broadcast
             {
@@ -109,33 +115,7 @@ namespace BroadcastSocialMedia.Controllers
 
 
         }
-
-        [HttpPost]
         [Authorize]
-
-        public async Task<IActionResult> BroadcastLiked(int BroadcastId)
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            var likedPost = await _dbContext.Likes.Where(l => l.UserId == user.Id && l.BroadcastId == BroadcastId).FirstOrDefaultAsync(); // Är liken gjord av den inloggade användaren och gäller den här liken detta inlägget?
-
-            if (likedPost != null)
-            {
-                _dbContext.Likes.Remove(likedPost);
-            }
-            else
-            {
-                _dbContext.Likes.Add(new Like()
-                {
-                    UserId = user.Id,
-                    BroadcastId = BroadcastId
-                });
-            }
-
-            await _dbContext.SaveChangesAsync();
-
-            return Json(new { success = true });
-        }
         [HttpPost]
         public async Task<IActionResult> ToggleLike(int BroadcastId)
         {
